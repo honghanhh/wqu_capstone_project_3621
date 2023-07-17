@@ -17,9 +17,16 @@ By achieving these objectives, we seek to provide traders and investors with a v
 The dataset can be accessible in [./historical_data](./historical_data/).
 (updating)
 
-## 3. Implementation
+## 3. Progress
 
 (updating)
+- [x] Module 1: Form Your Group and Choose Your Topic (1 Week)
+- [x] Module 2: Formulate Your Problem Statement (1 Week)
+- [x] Module 3: Analyze (1 Week)
+- [ ] Module 4: Design (1 Week)
+- [ ] Module 5: Peer Review (1 Week)
+- [ ] Module 6: Develop (1 Week)
+- [ ] Module 7: Implement & Present (2 Weeks)
 
 
 ## Contributors:
