@@ -6,6 +6,9 @@ __pycache__/
 # Notebook
 .ipynb_checkpoints
 
+# Mac
+.DS_Store
+analysis/.DS_Store
 # C extensions
 *.so
 
