@@ -24,9 +24,9 @@ The dataset can be accessible in [./historical_data](./historical_data/).
 - [x] Module 2: Formulate Your Problem Statement (1 Week)
 - [x] Module 3: Analyze (1 Week)
 - [x] Module 4: Design (1 Week)
-- [ ] Module 5: Peer Review (1 Week)
-- [ ] Module 6: Develop (1 Week)
-- [ ] Module 7: Implement & Present (2 Weeks)
+- [x] Module 5: Peer Review (1 Week)
+- [x] Module 6: Develop (1 Week)
+- [x] Module 7: Implement & Present (2 Weeks)
 
 
 ## Contributors:
