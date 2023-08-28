@@ -44,7 +44,10 @@ def plot_regime_switch(data, states, data_type):
         g_patch = mpatches.Patch(color='green', label='Bull')
         b_patch = mpatches.Patch(color='blue', label='Stagnant')
         plt.legend(handles=[r_patch, g_patch, b_patch])
-        name = f"./plots/{series_id.replace('.', '_')}_{data_type}.png"
+        # Create the folder if not exists
+        if not os.path.exists(f"./plots/{data_type}"):
+            os.makedirs(f"./plots/{data_type}")
+        name = f"./plots/{data_type}/{series_id.replace('.', '_')}_{data_type}.png"
         plt.savefig(name)
         plt.close()
 
@@ -60,18 +63,18 @@ if __name__ == '__main__':
         state = pd.read_csv("../data/hmm_data/train_data.csv", index_col=0)
         train.index = pd.to_datetime(train.index)
         state.index = pd.to_datetime(state.index)
-        plot_regime_switch(train, state, 'Train')
+        plot_regime_switch(train, state, 'train')
     elif args.data_version == 'validation_data.csv':
         val = pd.read_csv("../data/cleaned_data/validation_data.csv", index_col=0)
         state = pd.read_csv("../data/hmm_data/validation_data.csv", index_col=0)
         val.index = pd.to_datetime(val.index)
         state.index = pd.to_datetime(state.index)
-        plot_regime_switch(val, state, 'Validation')
+        plot_regime_switch(val, state, 'validation')
     elif args.data_version == 'test_data.csv':
         test = pd.read_csv("../data/cleaned_data/test_data.csv", index_col=0)
         state = pd.read_csv("../data/hmm_data/test_data.csv", index_col=0)
         test.index = pd.to_datetime(test.index)
         state.index = pd.to_datetime(state.index)
-        plot_regime_switch(test, state, 'Test')
+        plot_regime_switch(test, state, 'test')
     else:
         raise ValueError('Wrong data version. Choose from train_data.csv, validation_data.csv, and test_data.csv')
