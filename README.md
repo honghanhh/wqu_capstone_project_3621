@@ -14,20 +14,41 @@ By achieving these objectives, we seek to provide traders and investors with a v
 
 ## 2. Data
 
-The dataset can be accessible in [./historical_data](./historical_data/).
-(updating)
+To crawl the data, run the following command:
 
-## 3. Progress
+```python
+cd source_code
+python crawl_data.py
+```
 
-(updating)
-- [x] Module 1: Form Your Group and Choose Your Topic (1 Week)
-- [x] Module 2: Formulate Your Problem Statement (1 Week)
-- [x] Module 3: Analyze (1 Week)
-- [x] Module 4: Design (1 Week)
-- [x] Module 5: Peer Review (1 Week)
-- [x] Module 6: Develop (1 Week)
-- [x] Module 7: Implement & Present (2 Weeks)
+The dataset can be accessible in [./historical_data](./historical_data/), including:
 
+- [Financial Data](./historical_data/financial_data.csv): This includes data from the S&P500, Gold, 13-Week Treasury, and the USD Index. We sourced our financial data from Yahoo Finance.
+- [On-chain Data](./historical_data/btc_onchain_data.csv): We included various on-chain variables such as hash rate, block difficulty, and transaction count. To acquire this data, we utilized the Coin Metrics API v4.
+- [Sẹntiment Data](./historical_data/google_trend.csv): To gauge the sentiment surrounding Bitcoin, we utilized Google Trends data, specifically focusing on the word count associated with Bitcoin. The data collection for this category was done using the Google Trends Python API.
+- [Bitcoin Market Data](./historical_data/btc_ohlcv.csv): This category encompasses Bitcoin candle and volume data. These indicators provide valuable insights into different dimensions of price momentum, trend analysis, volatility, and volume dynamics.
+
+## 3. The workflow
+
+![workflow](./plots/workflow.png)
+
+## 4. Implementation
+
+- Run the following command to install the required packages:
+
+```bash
+pip install -r requirements.txt
+```
+
+- Run the following command to compile end-to-end pipeline:
+
+```python
+cd source_code
+chmod +x run.sh
+./run.sh
+```
+
+If you want to run each step of the pipeline separately, run each of the command in the `run.sh` file.
 
 ## Contributors:
 - 🐮 [Hanh Tran](https://github.com/honghanhh) 🐮
