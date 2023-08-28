@@ -1,3 +1,21 @@
+# Import libraries
+import os
+import argparse
+import numpy as np
+random_seed = 42
+np.random.seed(random_seed)
+
+import pandas as pd
+import networkx as nx
+from pgmpy.models import BayesianModel
+from pgmpy.inference import BeliefPropagation
+
+import matplotlib.pyplot as plt
+import pickle as pkl
+
+import warnings
+warnings.filterwarnings("ignore")
+
 def remove_disconnected_nodes(original_model: BayesianModel) -> BayesianModel:
     """
     Function to remove disconnected nodes from a Bayesian Model.
@@ -23,71 +41,81 @@ def remove_disconnected_nodes(original_model: BayesianModel) -> BayesianModel:
 
     return model
 
-model_bayesian_connected = remove_disconnected_nodes(model_bayesian)
+if __name__ == '__main__':
+    argparser = argparse.ArgumentParser(description='Bayesian Network')
+    argparser.add_argument('--cleaned_data', type=str, default='../data/cleaned_data/test_data.csv', help='Path to the data')
+    argparser.add_argument('--hmm_data', type=str, default='../data/hmm_data/test_data.csv', help='Path to the test data')
+    args = argparser.parse_args()
 
-# Convert Bayesian Network to Markov Network
-markov_model = model_bayesian_connected.to_markov_model()
+    # Load pkl model
+    with open('../models/bayesian_model.pkl', 'rb') as f:
+        model_bayesian = pkl.load(f)
+    
+    model_bayesian_connected = remove_disconnected_nodes(model_bayesian)
 
-# Initialize the Belief Propagation class with the Markov Model
-bp = BeliefPropagation(markov_model)
+    # Convert Bayesian Network to Markov Network
+    markov_model = model_bayesian_connected.to_markov_model()
 
-for cpd in model_bayesian_connected.get_cpds():
-    print("CPD for {0}:".format(cpd.variable))
-    print(cpd)
+    # Initialize the Belief Propagation class with the Markov Model
+    bp = BeliefPropagation(markov_model)
 
-# Create a new graph from the Markov model's edges
-G = nx.Graph()
-G.add_edges_from(markov_model.edges())
+    for cpd in model_bayesian_connected.get_cpds():
+        print("CPD for {0}:".format(cpd.variable))
+        print(cpd)
 
-# Draw the graph
-plt.figure(figsize=(8, 6))
-pos = nx.spring_layout(G, seed=42)  # set layout
-nx.draw(G, pos, with_labels=True, font_weight='bold')
+    # Create a new graph from the Markov model's edges
+    G = nx.Graph()
+    G.add_edges_from(markov_model.edges())
 
-plt.title('Markov Network Graph')
-plt.show()
+    # Draw the graph
+    fig = plt.figure(figsize=(8, 6))
+    pos = nx.spring_layout(G, seed=42)  # set layout
+    nx.draw(G, pos, with_labels=True, font_weight='bold')
+
+    plt.title('Markov Network Graph')
+    plt.show()
+
+    # Create folder if not exists
+    if not os.path.exists('./plots/markov'):
+        os.makedirs('./plots/markov')
+
+    # Save the plot
+    fig.savefig('./plots/markov/markov_model.png')
 
 
-from pandas.core.arrays.datetimelike import mode
+    # discretise test data and plot
+    test_data = pd.read_csv(args.cleaned_data, index_col=0)
+    states_test = pd.read_csv(args.hmm_data, index_col=0)
+    
 
-# discretise test data and plot
-discretise_data_with_hmm_and_save_csv(test_data, 'test_data')
-states_test = pd.read_csv("./data/test_data.csv", index_col=0);
-# states_test = states_test.drop('forecast', axis=1)
+    # Initialize an empty DataFrame to store the results
+    results_df_markov = pd.DataFrame()
 
-# Initialize an empty DataFrame to store the results
-results_df_markov = pd.DataFrame()
+    # Get a set of variable names from the model
+    model_variables = set(model_bayesian_connected.nodes())
+    print(model_variables)
 
-# Get a set of variable names from the model
-model_variables = set(model_bayesian_connected.nodes())
-print(model_variables)
+    # Loop over all rows in the DataFrame
+    for i in range(len(states_test)):
+        # Get the current row and convert it to a dictionary
+        evidence_row = test_data.iloc[i]
+        evidence = evidence_row.to_dict()
 
-# Loop over all rows in the DataFrame
-for i in range(len(states_test)):
-    # Get the current row and convert it to a dictionary
-    evidence_row = test_data.iloc[i]
-    evidence = evidence_row.to_dict()
+        # # Remove 'Close' and forecast from the evidence
+        if 'Close' in evidence:
+            del evidence['Close']
 
-    # # Remove 'Close' and forecast from the evidence
-    if 'Close' in evidence:
-        del evidence['Close']
-        # del evidence['forecast']
-        # del evidence['13w_treasury']
+        # Only keep variables in the evidence that are in the model
+        evidence = {var: value for var, value in evidence.items() if var in model_variables and value in [0, 1, 2]}
 
-    # Only keep variables in the evidence that are in the model
-    evidence = {var: value for var, value in evidence.items() if var in model_variables and value in [0, 1, 2]}
-    # for var, value in evidence.items():
-    #   print(f"Variable: {var}, Value: {value}, Type: {type(value)}")
+        # Perform the inference
+        result = bp.query(variables=['Close'], evidence=evidence)
 
-    # Perform the inference
-    result = bp.query(variables=['Close'], evidence=evidence)
+        # Convert the result to a DataFrame and append it to the results DataFrame
+        result_df = pd.DataFrame([result.values], columns=['prob_0', 'prob_1', 'prob_2'])
+        results_df_markov = pd.concat([results_df_markov, result_df], ignore_index=True)
 
-    # Convert the result to a DataFrame and append it to the results DataFrame
-    result_df = pd.DataFrame([result.values], columns=['prob_0', 'prob_1', 'prob_2'])
-    results_df_markov = pd.concat([results_df_markov, result_df], ignore_index=True)
-
-results_df_markov['forecast'] = np.argmax(results_df_markov.values, axis=1)
-# results_df = results_df.reset_index(drop=True)
-test_dataset = states_test.reset_index(drop=True)
-results_df_markov['Close'] = test_dataset['Close']
-results_df_markov
+    results_df_markov['forecast'] = np.argmax(results_df_markov.values, axis=1)
+    test_dataset = states_test.reset_index(drop=True)
+    results_df_markov['Close'] = test_dataset['Close']
+    print(results_df_markov)

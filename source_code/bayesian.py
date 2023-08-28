@@ -11,6 +11,8 @@ import matplotlib.pyplot as plt
 from pgmpy.models import BayesianNetwork
 from pgmpy.estimators import BDeuScore, BDsScore, BicScore, HillClimbSearch
 
+import pickle as pkl
+
 import warnings
 warnings.filterwarnings("ignore")
 
@@ -122,6 +124,14 @@ if __name__ == "__main__":
     model_bayesian = BayesianNetwork(ebunch=best_model.edges())
     model_bayesian.fit(train_data)
 
+    # If the folder does not exist, create a new one
+    if not os.path.exists('../models'):
+        os.makedirs('../models')
+
+    #Save the model into pkl file
+    with open('../models/bayesian_model.pkl', 'wb') as f:
+        pkl.dump(model_bayesian, f)
+
     #Create a figure
     fig = plt.figure(figsize=(5, 5))
 
@@ -141,6 +151,7 @@ if __name__ == "__main__":
     # Save the plot
     fig.savefig('./plots/bayesian/K2_model.png')
 
+    # Create folder if not exists
     model_bayesian.get_markov_blanket('Close')
 
     ## Discretise the validation dataset and plot
