@@ -50,7 +50,8 @@ chmod +x run.sh
 
 If you want to run each step of the pipeline separately, run each of the command in the `run.sh` file.
 
-## Contributors:
+## Contributors
+
 - 🐮 [Hanh Tran](https://github.com/honghanhh) 🐮
 - [Moaz Razi ](https://github.com/moazrazi)
 - [Phat Nguyen](https://github.com/fattiekakes)
