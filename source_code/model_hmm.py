@@ -1,12 +1,23 @@
-from tqdm import tqdm
+# Import libraries
 import os
-import logging
-import concurrent.futures
-from functools import partial
+import hmms
+import argparse
+import warnings
 import numpy as np
+import pandas as pd
+from tqdm import tqdm
+import concurrent.futures
+
+import warnings
+warnings.filterwarnings("ignore")
 
 # Set up logging
+import logging
 logging.basicConfig(filename="training.log", level=logging.INFO)
+
+#############################################################################################################################################################################################################
+# Discretising data using Hidden Markov Models (HMMs)
+#############################################################################################################################################################################################################
 
 def train_and_save_model(series_id, train_data):
     best_score = -np.inf
@@ -61,42 +72,67 @@ def train_and_save_model(series_id, train_data):
     best_model.save_params(path)
 
     # Save log likelihood, best_n_init, best_n_iter, best_n_states, and best_n_observables
-    with open(f"{path}_score.txt", "w") as f:
-        f.write(f"Best score: {best_score}\nBest n_init: {best_n_init}\nBest n_iter: {best_n_iter}\nBest n_states: {best_n_states}\nBest n_observables: {best_n_observables}")
+    # with open(f"{path}_score.txt", "w") as f:
+    #     f.write(f"Best score: {best_score}\nBest n_init: {best_n_init}\nBest n_iter: {best_n_iter}\nBest n_states: {best_n_states}\nBest n_observables: {best_n_observables}")
 
-if not os.path.exists("./hmms"):
-    os.makedirs("./hmms")
-
-with concurrent.futures.ProcessPoolExecutor() as executor:
-    series_ids = [col for col in train_data.columns if col != 'forecast']
-    futures = {executor.submit(train_and_save_model, series_id, train_data) for series_id in series_ids}
-
-    for future in tqdm(concurrent.futures.as_completed(futures), total=len(futures), desc="Training models"):
-        pass
-
+    
 def discretise_data_with_hmm_and_save_csv(data, data_type):
-  if not os.path.exists("./data"):
-    os.makedirs("./data")
+    if not os.path.exists('../data/hmm_data/'):
+        os.makedirs('../data/hmm_data/')
 
-  disc_test = pd.DataFrame(index = data[1:].index)
+    disc_test = pd.DataFrame(index = data[1:].index)
 
-  for series_id in data.columns:
-    path = "./hmms/" + series_id.replace(".", "_") + ".npz"
+    for series_id in data.columns:
+        path = "./hmms/" + series_id.replace(".", "_") + ".npz"
 
-    if series_id == 'forecast':
-      dhmm = hmms.DtHMM.from_file('./hmms/Close.npz')
-    else:
-      dhmm = hmms.DtHMM.from_file(path)
+        if series_id == 'forecast':
+            dhmm = hmms.DtHMM.from_file('./hmms/Close.npz')
+        else:
+            dhmm = hmms.DtHMM.from_file(path)
 
-    data_diff = data[series_id].diff()[1:]
-    emit_seq = np.array(data_diff.apply(lambda x: 1 if x > 0 else 0).values)
-    with warnings.catch_warnings():
-      warnings.filterwarnings("ignore", category=DeprecationWarning)
-    (log_prob, s_seq) = dhmm.viterbi(emit_seq)
-    disc_test[series_id] = s_seq
+        data_diff = data[series_id].diff()[1:]
+        emit_seq = np.array(data_diff.apply(lambda x: 1 if x > 0 else 0).values)
+        with warnings.catch_warnings():
+            warnings.filterwarnings("ignore", category=DeprecationWarning)
+        (log_prob, s_seq) = dhmm.viterbi(emit_seq)
+        disc_test[series_id] = s_seq
 
-  disc_test.to_csv(f'./data/{data_type}.csv')
+    disc_test.to_csv(f'../data/hmm_data/{data_type}.csv')
 
-discretise_data_with_hmm_and_save_csv(train_data, 'train_data')
-discretise_data_with_hmm_and_save_csv(test_data, 'validation_data')
-discretise_data_with_hmm_and_save_csv(test_data, 'test_data')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser()
+    parser.add_argument("--train_val_test_folder", type=str, default='../data/cleaned_data/', help='Path to the input folder')
+    args = parser.parse_args()
+
+
+    #####################
+    # Start the progress
+    #####################
+    print("Discretising the data...")
+    train_data = pd.read_csv(args.train_val_test_folder + 'train_data.csv', index_col=0)
+    val_data = pd.read_csv(args.train_val_test_folder + 'validation_data.csv', index_col=0)
+    test_data = pd.read_csv(args.train_val_test_folder + 'test_data.csv', index_col=0)
+    print('The shape of train data is: ', train_data.shape)
+    print('The shape of validation data is: ', val_data.shape)
+    print('The shape of test data is: ', test_data.shape)
+
+    if not os.path.exists("./hmms"):
+        os.makedirs("./hmms")
+
+    with concurrent.futures.ProcessPoolExecutor() as executor:
+        series_ids = [col for col in train_data.columns if col != 'forecast']
+        futures = {executor.submit(train_and_save_model, series_id, train_data) for series_id in series_ids}
+
+        for future in tqdm(concurrent.futures.as_completed(futures), total=len(futures), desc="Training models"):
+            pass
+
+    # Discretise the data using the trained models and save to csv
+    discretise_data_with_hmm_and_save_csv(train_data, 'train_data')
+    discretise_data_with_hmm_and_save_csv(val_data, 'validation_data')
+    discretise_data_with_hmm_and_save_csv(test_data, 'test_data')
+
+
+    #####################
+    # End the progress
+    #####################
+    print("Discretising the data...Done")
