@@ -31,7 +31,7 @@ The dataset can be accessible in [./historical_data](./historical_data/), includ
 
 ## 3. The workflow
 
-![workflow](./plots/workflow.png)
+![workflow](./architecture/workflow.png)
 
 ## 4. Implementation
 
