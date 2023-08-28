@@ -83,7 +83,8 @@ if __name__ == '__main__':
     #####################
     print("Cleaning the data...")
 
-    df_after_bad_data = handle_bad_data(args.input_data)
+    df = pd.read_csv(args.input_data, index_col=0)
+    df_after_bad_data = handle_bad_data(df)
     df_after_missing_data = handle_missing_data(df_after_bad_data)
     data = detect_outliers_zscore(df_after_missing_data)
     data.index = pd.to_datetime(data.index)
