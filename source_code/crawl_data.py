@@ -1,5 +1,7 @@
 
 # Import libraries
+import os
+import argparse
 import pandas as pd
 import yfinance as yf
 from datetime import date
@@ -148,12 +150,22 @@ def data_extraction():
     return btc_onchain, financial_prices_df, google_trends, btc_ohlcv
 
 if __name__ == '__main__':
+    args = argparse.ArgumentParser()
+    args.add_argument('--output_folder', type=str, default='../data/historical_data', help='Path to save data')
+    args = args.parse_args()
+
     btc_onchain, financial_prices_df, google_trends, btc_ohlcv = data_extraction()
     print(btc_onchain.head())
     print(financial_prices_df.head())
     print(google_trends.head())
     print(btc_ohlcv.head())
-    btc_onchain.to_csv('./historical_data/btc_onchain_data.csv')
-    financial_prices_df.to_csv('./historical_data/financial_data.csv')
-    google_trends.to_csv('./historical_data/google_trends.csv')
-    btc_ohlcv.to_csv('./historical_data/btc_ohlcv.csv')
+
+    # Create folder if not exists
+    if not os.path.exists(args.output_folder):
+        os.makedirs(args.output_folder)
+
+    # Save the data    
+    btc_onchain.to_csv(args.output_folder + 'btc_onchain_data.csv')
+    financial_prices_df.to_csv(args.output_folder + 'financial_data.csv')
+    google_trends.to_csv(args.output_folder + 'google_trends.csv')
+    btc_ohlcv.to_csv(args.output_folder + 'btc_ohlcv.csv')
