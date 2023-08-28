@@ -10,6 +10,33 @@ from coinmetrics.api_client import CoinMetricsClient
 import warnings
 warnings.filterwarnings("ignore")
 
+#############################################################################################################################################################################################################
+# Our dataset covers a 10 year period from Jul 1, 2013, to July 1, 2023. 
+# It includes a set of variables that we believe to influence the price of Bitcoin. 
+# These variables are adjusted and supplemented based on the initial performance of our model. 
+# Our aim is to utilize a weekly timeframe for predicting BTC/USD prices.
+# The data collection encompasses four broad categories:
+#############################################################################################################################################################################################################
+# Financial Data: 
+# This includes data from the S&P500, Gold, 13-Week Treasury, and the USD Index. We sourced our financial data from Yahoo Finance.
+#############################################################################################################################################################################################################
+# On-chain Data: 
+# We included various on-chain variables such as hash rate, block difficulty, and transaction count. 
+# To acquire this data, we utilized the Coin Metrics API v4.
+#############################################################################################################################################################################################################
+# Sentiment Data: 
+# To gauge the sentiment surrounding Bitcoin, we utilized Google Trends data, specifically focusing on the word count associated with Bitcoin. 
+# The data collection for this category was done using the Google Trends Python API.
+#############################################################################################################################################################################################################
+# Bitcoin Market Data: 
+# This category encompasses Bitcoin candle and volume data. 
+# These indicators provide valuable insights into different dimensions of price momentum, trend analysis, volatility, and volume dynamics.
+#############################################################################################################################################################################################################
+# Technical Indicators: 
+# We include technical indicators to capture various aspects of Bitcoin's price behavior and market trends. 
+# The technical indicators we utilize include Simple Moving Average (SMA), Exponential Moving Average (EMA), Relative Strength Index (RSI), Volume-Weighted Average Price (VWAP),and On-Balance Volume (OBV). 
+# We use 'ta' library to compute these indicators.
+#############################################################################################################################################################################################################
 
 def data_extraction():
     end = date(2023, 7, 1)
