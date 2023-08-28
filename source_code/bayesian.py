@@ -1,12 +1,22 @@
-# Retrieve training set
-train_data = pd.read_csv("./data/train_data.csv", index_col=0)
+# Import libraries
+import os
+import argparse
+import numpy as np
+random_seed = 42
+np.random.seed(random_seed)
 
-# Define scoring methods
-scoring_methods = {
-    "BicScore": BicScore(train_data),
-    "BDeuScore": BDeuScore(train_data),
-    "BDsScore": BDsScore(train_data)
-}
+import pandas as pd
+import networkx as nx
+import matplotlib.pyplot as plt
+from pgmpy.models import BayesianNetwork
+from pgmpy.estimators import BDeuScore, BDsScore, BicScore, HillClimbSearch
+
+import warnings
+warnings.filterwarnings("ignore")
+
+import logging
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
 
 def find_best_model(train_data, scoring_methods, max_iters):
     best_model = None
@@ -33,35 +43,6 @@ def find_best_model(train_data, scoring_methods, max_iters):
                 best_iter = max_iter
 
     return best_model, best_method, best_score, best_iter
-
-# Use the function to find the best model
-best_model, best_method, best_score, best_iter = find_best_model(train_data, scoring_methods, max_iters=[5, 10])
-
-print(f"\nThe best method is {best_method} with max_iter={best_iter} and score {best_score}")
-print(f"The best model nodes: {sorted(best_model.nodes())}")
-print(f"The best model edges: {best_model.edges()}")
-
-# Fit the Bayesian Network with the best model
-model_bayesian = BayesianNetwork(ebunch=best_model.edges())
-model_bayesian.fit(train_data)
-
-#Create a figure
-fig = plt.figure(figsize=(5, 5))
-
-#Plot K2_model
-G1 = nx.DiGraph()
-G1.add_edges_from(model_bayesian.edges())
-pos1 = nx.spring_layout(G1, iterations=20)
-nx.draw(G1, node_color='y', with_labels=True, edge_color='b', font_weight=0.5)
-plt.title('Bayesian Network Graph')
-
-#Show the plot
-plt.show()
-
-model_bayesian.get_markov_blanket('Close')
-
-import logging
-logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
 
 def predict_value(model_struct, states):
     """
@@ -114,14 +95,61 @@ def calculate_error(pred_value, real):
     except Exception as e:
         logging.error("Failed to calculate error with error: %s", e)
 
-## Discretise the validation dataset and plot
-discretise_data_with_hmm_and_save_csv(vald_data,'validation_data')
-states_validation = pd.read_csv("./data/validation_data.csv", index_col=0)
-states_validation.index = pd.to_datetime(states_validation.index)
-plot_regime_switch(vald_data, states_validation, 'VALIDATION')
+if __name__ == "__main__":
+    parser = argparse.ArgumentParser(description='Bayesian Network')
+    parser.add_argument('--train_data', type=str, default='../data/hmm_data/train_data.csv', help='Path to train data file')
+    parser.add_argument('--val_data', type=str, default='../data/hmm_data/validation_data.csv', help='Path to train data file')
+    args = parser.parse_args()
 
-# Record real data observation, to be compared with the predicted one
-validation_real = states_validation['Close'].to_numpy()
+    # Retrieve training set
+    train_data = pd.read_csv(args.train_data, index_col=0)
 
-prediction_validation_bayesian = predict_value(model_bayesian,states_validation)
-error_vald_bayesian = calculate_error(prediction_validation_bayesian,validation_real)
+    # Define scoring methods
+    scoring_methods = {
+        "BicScore": BicScore(train_data),
+        "BDeuScore": BDeuScore(train_data),
+        "BDsScore": BDsScore(train_data)
+    }
+
+    # Use the function to find the best model
+    best_model, best_method, best_score, best_iter = find_best_model(train_data, scoring_methods, max_iters=[5, 10])
+
+    print(f"\nThe best method is {best_method} with max_iter={best_iter} and score {best_score}")
+    print(f"The best model nodes: {sorted(best_model.nodes())}")
+    print(f"The best model edges: {best_model.edges()}")
+
+    # Fit the Bayesian Network with the best model
+    model_bayesian = BayesianNetwork(ebunch=best_model.edges())
+    model_bayesian.fit(train_data)
+
+    #Create a figure
+    fig = plt.figure(figsize=(5, 5))
+
+    #Plot K2_model
+    G1 = nx.DiGraph()
+    G1.add_edges_from(model_bayesian.edges())
+    pos1 = nx.spring_layout(G1, iterations=20)
+    nx.draw(G1, node_color='y', with_labels=True, edge_color='b', font_weight=0.5)
+    plt.title('Bayesian Network Graph')
+
+    #Show the plot
+    plt.show()
+
+    if not os.path.exists('./plots/bayesian'):
+        os.makedirs('./plots/bayesian')
+        
+    # Save the plot
+    fig.savefig('./plots/bayesian/K2_model.png')
+
+    model_bayesian.get_markov_blanket('Close')
+
+    ## Discretise the validation dataset and plot
+    states_validation = pd.read_csv(args.val_data, index_col=0)
+    states_validation.index = pd.to_datetime(states_validation.index)
+
+    # Record real data observation, to be compared with the predicted one
+    validation_real = states_validation['Close'].to_numpy()
+
+    prediction_validation_bayesian = predict_value(model_bayesian, states_validation)
+    error_vald_bayesian = calculate_error(prediction_validation_bayesian, validation_real)
+    print("The error of validation set using Bayesian methods: ", error_vald_bayesian)
