@@ -11,6 +11,6 @@ cd source_code
 # python regime_switch_plot.py --data_version 'validation_data.csv' # DONE
 # python regime_switch_plot.py --data_version 'test_data.csv' # DONE
 # python bayesian.py  --train_data '../data/hmm_data/train_data.csv' --val_data '../data/hmm_data/validation_data.csv' # DONE
+python markov.py  --cleaned_data '../data/cleaned_data/test_data.csv' --hmm_data '../data/hmm_data/test_data.csv' # DONE
 
-python markov.py  # Unchecked
 # python eval.py # Unchecked

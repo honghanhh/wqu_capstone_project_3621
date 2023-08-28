@@ -56,6 +56,14 @@ if __name__ == '__main__':
     # Convert Bayesian Network to Markov Network
     markov_model = model_bayesian_connected.to_markov_model()
 
+    # If the folder does not exist, create a new one
+    if not os.path.exists('../models'):
+        os.makedirs('../models')
+
+    #Save the model into pkl file
+    with open('../models/markov_model.pkl', 'wb') as f:
+        pkl.dump(markov_model, f)
+
     # Initialize the Belief Propagation class with the Markov Model
     bp = BeliefPropagation(markov_model)
 
