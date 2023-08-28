@@ -1,4 +1,6 @@
 # Import libraries
+import os
+import argparse
 import numpy as np
 import pandas as pd
 from datetime import datetime
@@ -82,12 +84,25 @@ def merge_dataframes_on_column(dataframes, column_name):
     return df_merged
 
 if __name__ == '__main__':
+    # Parse the arguments
+    parser = argparse.ArgumentParser(description='Preprocess the data')
+    parser.add_argument('--input_folder', type=str, default='../data/historical_data/', help='Path to the input folder')
+    parser.add_argument('--output_file', type=str, default='../data/preprocessed_data/', help='Path to the output file')
+    args = parser.parse_args()
+    
+
+    #####################
+    # Start the progress
+    #####################
+    print("Preprocessing the data...")
+
     # Reading csv data into dataframes
-    path = 'https://raw.githubusercontent.com/honghanhh/wqu_capstone_project_3621/main/historical_data/'
+    path = args.input_folder
     btc_onchain = pd.read_csv(path + 'btc_onchain_data.csv')
     financial_data = pd.read_csv(path + 'financial_data.csv')
     google_trends = pd.read_csv(path + 'google_trends.csv')
     btc_ohlcv_daily = pd.read_csv(path + 'btc_ohlcv.csv')
+
     ## Remove btc price and marketcap from btc_onchain data as we use the data from btc_ohlcv df
     btc_onchain = btc_onchain.drop(['btc_price', 'market_cap'], axis=1)
     btc_onchain = btc_onchain.rename(columns={'has_ate': 'hash_rate'})
@@ -118,5 +133,15 @@ if __name__ == '__main__':
     # Print the number of rows and columns in df_data
     print(f"The DataFrame has {df_data.shape[0]} weekly data points (rows) and {df_data.shape[1]} variables (columns).")
     print(df_data.head())
-    df_data.to_csv('./historical_data/df_data.csv')
+    
+    # Create folder if it not exists
+    if not os.path.exists(os.path.dirname(args.output_file)):
+        os.makedirs(os.path.dirname(args.output_file))
+    
+    df_data.to_csv(args.output_file + 'preprocessed_data.csv')
+
+    #####################
+    # End the progress
+    #####################
+    print("Preprocessing the data...Done")
         

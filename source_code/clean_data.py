@@ -1,39 +1,9 @@
 # Import libraries
-import ta
 import os
-import copy
-import hmms
-import quandl
-
+import argparse
 import numpy as np
 import pandas as pd
-import yfinance as yf
-import pandas_datareader as pdr
-import pandas_datareader.data as web
-
 from scipy import stats
-from datetime import date
-from datetime import datetime
-import matplotlib.pyplot as plt
-import matplotlib.ticker as mtick
-import matplotlib.dates as mdates
-import matplotlib.patches as mpatches
-from matplotlib.collections import LineCollection
-from matplotlib.colors import Colormap, ListedColormap, BoundaryNorm
-from coinmetrics.api_client import CoinMetricsClient
-from cryptocmd import CmcScraper
-
-
-import pylab as plb
-import networkx as nx
-from tqdm import tqdm
-from pytrends.request import TrendReq
-from pgmpy.models import BayesianNetwork
-from pgmpy.models import MarkovNetwork, BayesianModel
-from pgmpy.inference import BeliefPropagation
-from pgmpy.estimators import BDeuScore, BDsScore, BicScore, HillClimbSearch, K2Score, BayesianEstimator
-
-import matplotlib.pyplot as plt
 
 import warnings
 warnings.filterwarnings("ignore")
@@ -102,7 +72,18 @@ def detect_outliers_zscore(df, threshold=3):
     return cleaned_data
 
 if __name__ == '__main__':
-    df_after_bad_data = handle_bad_data(df_data)
+    # Parse the arguments
+    parser = argparse.ArgumentParser(description='Clean the data')
+    parser.add_argument('--input_data', type=str, default='../data/preprocessed_data/preprocessed_data.csv', help='Path to the data file')
+    parser.add_argument('--output_folder', type=str, default='../data/cleaned_data/', help='Path to the output file')
+    args = parser.parse_args()
+
+    #####################
+    # Start the progress
+    #####################
+    print("Cleaning the data...")
+
+    df_after_bad_data = handle_bad_data(args.input_data)
     df_after_missing_data = handle_missing_data(df_after_bad_data)
     data = detect_outliers_zscore(df_after_missing_data)
     data.index = pd.to_datetime(data.index)
@@ -117,7 +98,17 @@ if __name__ == '__main__':
     vald_data = data[int(0.80 * data.shape[0]) : int(0.90 * data.shape[0])]
     test_data = data[int(0.90* data.shape[0]) : int(data.shape[0])]
 
+    # Create folder if it not exists
+    if not os.path.exists(os.path.dirname(args.output_folder)):
+        os.makedirs(os.path.dirname(args.output_folder))
+
     # Save the data
-    train_data.to_csv('train_data.csv')
-    vald_data.to_csv('vald_data.csv')
-    test_data.to_csv('test_data.csv')
+    train_data.to_csv(args.output_folder + 'train_data.csv')
+    vald_data.to_csv(args.output_folder + 'validation_data.csv')
+    test_data.to_csv(args.output_folder + 'test_data.csv')
+
+    #####################
+    # End the progress
+    #####################
+    print("Cleaning the data...Done")
+        
