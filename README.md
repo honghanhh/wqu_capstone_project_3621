@@ -14,13 +14,6 @@ By achieving these objectives, we seek to provide traders and investors with a v
 
 ## 2. Data
 
-To crawl the data, run the following command:
-
-```python
-cd source_code
-python crawl_data.py
-```
-
 The dataset can be accessible in [./historical_data](./historical_data/), including:
 
 - [Financial Data](./historical_data/financial_data.csv): This includes data from the S&P500, Gold, 13-Week Treasury, and the USD Index. We sourced our financial data from Yahoo Finance.
@@ -34,6 +27,15 @@ The dataset can be accessible in [./historical_data](./historical_data/), includ
 ![workflow](./architecture/workflow.png)
 
 ## 4. Implementation
+
+- Download and install `conda` at [here](https://www.anaconda.com/download). If you're unfamiliar with conda, you can use `virtualenv` instead.
+
+- Create a virtual environment dedicated to this project by running the following commands:
+
+```bash
+conda create -n wqu python=3.9
+conda activate wqu
+```
 
 - Run the following command to install the required packages:
 

@@ -160,9 +160,13 @@ if __name__ == '__main__':
     print("Crawling the data...")
 
     btc_onchain, financial_prices_df, google_trends, btc_ohlcv = data_extraction()
+    print("Bitcoin Onchain data")
     print(btc_onchain.head())
+    print("Financial data")
     print(financial_prices_df.head())
+    print("Google Trends data")
     print(google_trends.head())
+    print("Bitcoin OHLCV data")
     print(btc_ohlcv.head())
 
     # Create folder if not exists

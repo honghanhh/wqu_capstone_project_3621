@@ -87,7 +87,7 @@ if __name__ == '__main__':
     nx.draw(G, pos, with_labels=True, font_weight='bold')
 
     plt.title('Markov Network Graph')
-    plt.show()
+    # plt.show()
 
     # Create folder if not exists
     if not os.path.exists('./plots/markov'):
@@ -130,10 +130,12 @@ if __name__ == '__main__':
         results_df_markov = pd.concat([results_df_markov, result_df], ignore_index=True)
 
     results_df_markov['forecast'] = np.argmax(results_df_markov.values, axis=1)
+    results_df_markov['date'] = states_test.index
     test_dataset = states_test.reset_index(drop=True)
-    results_df_markov['Close'] = test_dataset['Close']
-    print(results_df_markov)
-
+    results_df_markov['close'] = test_dataset['Close']
+    # print(results_df_markov)
+    results_df_markov[['date', 'prob_0', 'prob_1', 'prob_2', 'forecast', 'close']].to_csv('../data/markov_results.csv')
+    
     #####################
     # End the progress
     #####################

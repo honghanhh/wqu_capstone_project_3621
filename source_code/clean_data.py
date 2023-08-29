@@ -91,7 +91,7 @@ if __name__ == '__main__':
     data['forecast'] = data['Close'].shift(-1)
 
     # Remove these variables and initial rows with 0 Volume
-    data.drop(['block_size', 'block_difficulty'], axis=1,inplace=True)
+    data.drop(['block_difficulty'], axis=1,inplace=True)
     data = data[data['Volume'] != 0]
 
     # Train, Validation and Test split

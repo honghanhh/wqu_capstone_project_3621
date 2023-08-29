@@ -4,7 +4,7 @@ import argparse
 import numpy as np
 random_seed = 42
 np.random.seed(random_seed)
-
+from utils import *
 import pandas as pd
 import networkx as nx
 import matplotlib.pyplot as plt
@@ -46,61 +46,12 @@ def find_best_model(train_data, scoring_methods, max_iters):
 
     return best_model, best_method, best_score, best_iter
 
-def predict_value(model_struct, states):
-    """
-    Predicts the value for a given model and states.
-
-    Parameters:
-    model_struct (BayesianModel): The trained model.
-    states (pd.DataFrame): The states data.
-
-    Returns:
-    pred_value (np.array): The predicted value.
-    """
-    try:
-        column_names_df1 = set(model_struct.nodes())
-        column_names_df2 = set(states.columns)
-        columns_only_in_df2 = column_names_df2 - column_names_df1
-
-        data_new = states.drop(columns=list(columns_only_in_df2) + ['forecast'], axis=1)
-
-        logging.info(f'data_new columns: {data_new.columns}')
-        logging.info(f'model nodes: {model_struct.nodes()}')
-
-        prediction = model_struct.predict(data_new)
-        pred_value = prediction['forecast'].to_numpy()
-        print(f'Predicted value: {pred_value}')
-
-        return pred_value
-
-    except Exception as e:
-        logging.error("Failed to predict values with error: %s", e)
-
-def calculate_error(pred_value, real):
-    """
-    Calculates the error between predicted and real values.
-
-    Parameters:
-    pred_value (np.array): The predicted values.
-    real (np.array): The real values.
-
-    Returns:
-    error (float): The error value.
-    """
-    try:
-        error = np.mean(real != np.roll(pred_value, 1))
-        print(f'\nError: {error * 100}%')
-        logging.info(f'Error: {error * 100} %')
-
-        return error
-
-    except Exception as e:
-        logging.error("Failed to calculate error with error: %s", e)
 
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Bayesian Network')
     parser.add_argument('--train_data', type=str, default='../data/hmm_data/train_data.csv', help='Path to train data file')
     parser.add_argument('--val_data', type=str, default='../data/hmm_data/validation_data.csv', help='Path to train data file')
+    parser.add_argument('--test_data', type=str, default='../data/hmm_data/test_data.csv', help='Path to train data file')
     args = parser.parse_args()
 
     #####################
@@ -148,7 +99,7 @@ if __name__ == "__main__":
     plt.title('Bayesian Network Graph')
 
     #Show the plot
-    plt.show()
+    # plt.show()
 
     if not os.path.exists('./plots/bayesian'):
         os.makedirs('./plots/bayesian')
@@ -169,6 +120,27 @@ if __name__ == "__main__":
     prediction_validation_bayesian = predict_value(model_bayesian, states_validation)
     error_vald_bayesian = calculate_error(prediction_validation_bayesian, validation_real)
     print("The error of validation set using Bayesian methods: ", error_vald_bayesian)
+
+
+    ## Discretise the test dataset and plot
+    states_test = pd.read_csv(args.test_data, index_col=0)
+    states_test.index = pd.to_datetime(states_test.index)
+
+    # Record real data observation, to be compared with the predicted one
+    test_real = states_test['Close'].to_numpy()
+
+    prediction_test_bayesian = predict_value(model_bayesian, states_test)
+    error_test_bayesian = calculate_error(prediction_test_bayesian, test_real)
+    print("The error of test set using Bayesian methods: ", error_test_bayesian)
+
+    result_df_bayesian = pd.DataFrame({
+        'date': states_test.index,
+        'forecast': prediction_test_bayesian,
+        'close': test_real
+    })
+
+    print(result_df_bayesian)
+    result_df_bayesian.to_csv('../data/bayesian_results.csv')
     
     #####################
     # End the progress

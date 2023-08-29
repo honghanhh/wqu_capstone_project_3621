@@ -1,8 +1,17 @@
 # Import libraries
+import os
 import pandas as pd
+import numpy as np
+from utils import *
 import matplotlib.pyplot as plt
 import matplotlib.patches as mpatches
 
+import logging
+logging.basicConfig(filename="training.log", level=logging.INFO)
+logging.basicConfig(level=logging.INFO, format='%(asctime)s - %(levelname)s - %(message)s')
+
+import warnings
+warnings.filterwarnings("ignore")
 
 def trading_strategy(test_sheet, model_type, forecast_col):
     # Check the model type
@@ -89,25 +98,35 @@ def get_stats(returns: pd.Series, risk_free_rate: float = 0.0) -> dict:
 
 if __name__ == '__main__':
 
-    # Discretise test data and plot
-    states_test = pd.read_csv("./data/hmm_data/test_data.csv", index_col=0)
-    states_test.index = pd.to_datetime(states_test.index)
-
-    # Record real data observation, to be compared with the predicted one
-    test_real = states_test['Close'].to_numpy()
-
-    prediction_test_bayesian = predict_value(model_bayesian,  states_test)
-    error_test_bayesian = calculate_error(prediction_test_bayesian,test_real)
-
+    #####################
+    # Start the progress
+    #####################
+    print("Evaluating...")
+    
+    ### Bayesian Model ###
+    results_df_bayesian = pd.read_csv("../data/bayesian_results.csv", index_col=0)
+    prediction_test_bayesian = results_df_bayesian['forecast'].to_numpy()
+    real_values_bayesian = results_df_bayesian['close'].to_list()
+    
+    ### Hidden Markov Model ###
+    results_df_markov = pd.read_csv("../data/markov_results.csv", index_col=0)
     prediction_test_markov = results_df_markov['forecast'].to_numpy()
-    real_values = results_df_markov['Close'].to_numpy()
+    real_values_markov = results_df_markov['close'].to_list()
 
-    print(f'Real values: \n {real_values}')
-    print(f'Predicted values: \n {prediction_test_markov}')
-    error_test_markov = calculate_error(prediction_test_markov,real_values)
+    # Calculate error
+    ### Bayesian Model ###
+    print(f'Bayesian real values: \n {real_values_bayesian}')
+    print(f'Bayesian predicted values: \n {prediction_test_bayesian}')
+    error_test_bayesian = calculate_error(prediction_test_bayesian, real_values_bayesian)
+    print(f'Bayesian error: \n {error_test_bayesian}')
 
+    ### Hidden Markov Model ###
+    print(f'Markov real values: \n {real_values_bayesian}')
+    print(f'Markov predicted values: \n {prediction_test_markov}')
+    error_test_markov = calculate_error(prediction_test_markov, real_values_markov)
+    print(f'Markov error: \n {error_test_markov}')
 
-    test_data = data[int(0.90* data.shape[0]) : int(data.shape[0])]
+    test_data = pd.read_csv('../data/cleaned_data/test_data.csv', index_col='Date')
     test_sheet = pd.DataFrame(index=test_data.index[1:])  # exclude the first row
     test_sheet['Close'] = test_data['Close'].iloc[1:].to_numpy()
 
@@ -123,16 +142,25 @@ if __name__ == '__main__':
     test_sheet, num_trades_markov = trading_strategy(test_sheet, 'markov', 'markov_forecast')
     print(f"Number of trades with Markov Model: {num_trades_markov}")
 
-    plt.plot(test_sheet.index, test_sheet['Close'], 'r');
-    plt.plot(test_sheet.index, test_sheet['bayesian_total'], 'g');
-    plt.plot(test_sheet.index, test_sheet['markov_total'], 'b');
+    plt.plot(test_sheet.index, test_sheet['Close'], 'r')
+    plt.plot(test_sheet.index, test_sheet['bayesian_total'], 'g')
+    plt.plot(test_sheet.index, test_sheet['markov_total'], 'b')
 
     r_patch = mpatches.Patch(color='red', label='BTC Price')
     g_patch = mpatches.Patch(color='green', label='Bayesian Model')
     b_patch = mpatches.Patch(color='blue', label='Markov Model')
 
     plt.legend(handles=[r_patch, g_patch, b_patch], bbox_to_anchor=(1.05, 1), loc='upper left')
-    
+    # rotate the x-axis label to 45 degree
+    plt.xticks(rotation=45)
+    # plt.show()
+
+    # Create folder if not exists
+    if not os.path.exists('./plots/comparison'):
+        os.makedirs('./plots/comparison')
+
+    # Save the plot
+    plt.savefig('./plots/comparison/comparison.png')
 
     # Calculate returns
     test_sheet['actual_returns'] = np.log(test_sheet['Close'] / test_sheet['Close'].shift(1))
@@ -153,3 +181,8 @@ if __name__ == '__main__':
     stats_table = pd.concat([actual_stats_df, predicted_bayesian_stats_df, predicted_markov_stats_df], axis=1)
     stats_table_rounded = stats_table.round(2)
     print(stats_table_rounded)
+
+    #####################
+    # End the progress
+    #####################
+    print("Evaluating...Done")
