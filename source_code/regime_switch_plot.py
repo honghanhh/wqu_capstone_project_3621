@@ -57,6 +57,11 @@ if __name__ == '__main__':
     parser.add_argument('--data_version', type=str, default='train_data.csv', help='Path to the data file')
     args = parser.parse_args()
 
+    #####################
+    # Start the progress
+    #####################
+    print("Plot Regime Switch...")
+
     # Load the data and states
     if args.data_version == 'train_data.csv':
         train = pd.read_csv("../data/cleaned_data/train_data.csv", index_col=0)
@@ -78,3 +83,8 @@ if __name__ == '__main__':
         plot_regime_switch(test, state, 'test')
     else:
         raise ValueError('Wrong data version. Choose from train_data.csv, validation_data.csv, and test_data.csv')
+
+    #####################
+    # End the progress
+    #####################
+    print("Plot Regime Switch...Done")

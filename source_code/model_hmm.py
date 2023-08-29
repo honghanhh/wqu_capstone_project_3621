@@ -22,10 +22,10 @@ logging.basicConfig(filename="training.log", level=logging.INFO)
 def train_and_save_model(series_id, train_data):
     best_score = -np.inf
     best_model = None
-    best_n_init = None
-    best_n_iter = None
-    best_n_states = None
-    best_n_observables = None
+    # best_n_init = None
+    # best_n_iter = None
+    # best_n_states = None
+    # best_n_observables = None
 
     # Define range of n_init and n_iter values to try
     n_init_values = [10, 20, 30, 40, 50]
@@ -55,10 +55,10 @@ def train_and_save_model(series_id, train_data):
                             if score > best_score:
                                 best_score = score
                                 best_model = dhmm
-                                best_n_init = n_init
-                                best_n_iter = n_iter
-                                best_n_states = n_states
-                                best_n_observables = n_observables
+                                # best_n_init = n_init
+                                # best_n_iter = n_iter
+                                # best_n_states = n_states
+                                # best_n_observables = n_observables
                         except Exception as e:
                             # If the model fails to fit the data, just skip it
                             logging.info(f"Training failed for series {series_id} on initialization {i} with error {str(e)}")
@@ -94,7 +94,9 @@ def discretise_data_with_hmm_and_save_csv(data, data_type):
         emit_seq = np.array(data_diff.apply(lambda x: 1 if x > 0 else 0).values)
         with warnings.catch_warnings():
             warnings.filterwarnings("ignore", category=DeprecationWarning)
-        (log_prob, s_seq) = dhmm.viterbi(emit_seq)
+        # print(type(emit_seq))
+        # print(emit_seq)
+        _, s_seq = dhmm.viterbi(emit_seq)
         disc_test[series_id] = s_seq
 
     disc_test.to_csv(f'../data/hmm_data/{data_type}.csv')
@@ -104,11 +106,11 @@ if __name__ == "__main__":
     parser.add_argument("--train_val_test_folder", type=str, default='../data/cleaned_data/', help='Path to the input folder')
     args = parser.parse_args()
 
-
     #####################
     # Start the progress
     #####################
     print("Discretising the data...")
+
     train_data = pd.read_csv(args.train_val_test_folder + 'train_data.csv', index_col=0)
     val_data = pd.read_csv(args.train_val_test_folder + 'validation_data.csv', index_col=0)
     test_data = pd.read_csv(args.train_val_test_folder + 'test_data.csv', index_col=0)
@@ -130,7 +132,6 @@ if __name__ == "__main__":
     discretise_data_with_hmm_and_save_csv(train_data, 'train_data')
     discretise_data_with_hmm_and_save_csv(val_data, 'validation_data')
     discretise_data_with_hmm_and_save_csv(test_data, 'test_data')
-
 
     #####################
     # End the progress

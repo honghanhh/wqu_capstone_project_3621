@@ -103,6 +103,11 @@ if __name__ == "__main__":
     parser.add_argument('--val_data', type=str, default='../data/hmm_data/validation_data.csv', help='Path to train data file')
     args = parser.parse_args()
 
+    #####################
+    # Start the progress
+    #####################
+    print("Training Bayesian model...")
+
     # Retrieve training set
     train_data = pd.read_csv(args.train_data, index_col=0)
 
@@ -164,3 +169,8 @@ if __name__ == "__main__":
     prediction_validation_bayesian = predict_value(model_bayesian, states_validation)
     error_vald_bayesian = calculate_error(prediction_validation_bayesian, validation_real)
     print("The error of validation set using Bayesian methods: ", error_vald_bayesian)
+    
+    #####################
+    # End the progress
+    #####################
+    print("Training Bayesian model...Done")

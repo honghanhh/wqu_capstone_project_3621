@@ -154,6 +154,11 @@ if __name__ == '__main__':
     args.add_argument('--output_folder', type=str, default='../data/historical_data', help='Path to save data')
     args = args.parse_args()
 
+    #####################
+    # Start the progress
+    #####################
+    print("Crawling the data...")
+
     btc_onchain, financial_prices_df, google_trends, btc_ohlcv = data_extraction()
     print(btc_onchain.head())
     print(financial_prices_df.head())
@@ -169,3 +174,8 @@ if __name__ == '__main__':
     financial_prices_df.to_csv(args.output_folder + 'financial_data.csv')
     google_trends.to_csv(args.output_folder + 'google_trends.csv')
     btc_ohlcv.to_csv(args.output_folder + 'btc_ohlcv.csv')
+
+    #####################
+    # End the progress
+    #####################
+    print("Crawling the data...Done")

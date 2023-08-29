@@ -94,15 +94,14 @@ if __name__ == '__main__':
     states_test.index = pd.to_datetime(states_test.index)
 
     # Record real data observation, to be compared with the predicted one
-    test_real = states_test['Close'].to_numpy();
-    print("\nReal Value: ");
-    print(test_real);
+    test_real = states_test['Close'].to_numpy()
 
     prediction_test_bayesian = predict_value(model_bayesian,  states_test)
     error_test_bayesian = calculate_error(prediction_test_bayesian,test_real)
 
     prediction_test_markov = results_df_markov['forecast'].to_numpy()
     real_values = results_df_markov['Close'].to_numpy()
+
     print(f'Real values: \n {real_values}')
     print(f'Predicted values: \n {prediction_test_markov}')
     error_test_markov = calculate_error(prediction_test_markov,real_values)
@@ -133,7 +132,7 @@ if __name__ == '__main__':
     b_patch = mpatches.Patch(color='blue', label='Markov Model')
 
     plt.legend(handles=[r_patch, g_patch, b_patch], bbox_to_anchor=(1.05, 1), loc='upper left')
-
+    
 
     # Calculate returns
     test_sheet['actual_returns'] = np.log(test_sheet['Close'] / test_sheet['Close'].shift(1))

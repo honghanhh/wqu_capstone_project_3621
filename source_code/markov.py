@@ -47,6 +47,12 @@ if __name__ == '__main__':
     argparser.add_argument('--hmm_data', type=str, default='../data/hmm_data/test_data.csv', help='Path to the test data')
     args = argparser.parse_args()
 
+
+    #####################
+    # Start the progress
+    #####################
+    print("Training Hidden Markov...")
+
     # Load pkl model
     with open('../models/bayesian_model.pkl', 'rb') as f:
         model_bayesian = pkl.load(f)
@@ -127,3 +133,8 @@ if __name__ == '__main__':
     test_dataset = states_test.reset_index(drop=True)
     results_df_markov['Close'] = test_dataset['Close']
     print(results_df_markov)
+
+    #####################
+    # End the progress
+    #####################
+    print("Training Hidden Markov...Done")
