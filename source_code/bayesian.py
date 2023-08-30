@@ -105,7 +105,7 @@ if __name__ == "__main__":
         os.makedirs('./plots/bayesian')
         
     # Save the plot
-    fig.savefig('./plots/bayesian/K2_model.png')
+    fig.savefig('./plots/bayesian/Bayesian Network Graph.png')
 
     # Create folder if not exists
     model_bayesian.get_markov_blanket('Close')
@@ -140,7 +140,7 @@ if __name__ == "__main__":
     })
 
     print(result_df_bayesian)
-    result_df_bayesian.to_csv('../data/bayesian_results.csv')
+    result_df_bayesian.to_csv('../data/bayesian_results.csv', index=False)
     
     #####################
     # End the progress

@@ -134,7 +134,7 @@ if __name__ == '__main__':
     test_dataset = states_test.reset_index(drop=True)
     results_df_markov['close'] = test_dataset['Close']
     # print(results_df_markov)
-    results_df_markov[['date', 'prob_0', 'prob_1', 'prob_2', 'forecast', 'close']].to_csv('../data/markov_results.csv')
+    results_df_markov[['date', 'prob_0', 'prob_1', 'prob_2', 'forecast', 'close']].to_csv('../data/markov_results.csv', index=False)
     
     #####################
     # End the progress

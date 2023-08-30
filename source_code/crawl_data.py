@@ -177,7 +177,7 @@ if __name__ == '__main__':
     btc_onchain.to_csv(args.output_folder + 'btc_onchain_data.csv')
     financial_prices_df.to_csv(args.output_folder + 'financial_data.csv')
     google_trends.to_csv(args.output_folder + 'google_trends.csv')
-    btc_ohlcv.to_csv(args.output_folder + 'btc_ohlcv.csv')
+    btc_ohlcv.to_csv(args.output_folder + 'btc_ohlcv.csv', index=False)
 
     #####################
     # End the progress
