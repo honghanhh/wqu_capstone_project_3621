@@ -105,9 +105,9 @@ if __name__ == '__main__':
         os.makedirs(args.output_folder)
 
     # Save the data
-    train_data.to_csv(args.output_folder + 'train_data.csv', index=False)
-    vald_data.to_csv(args.output_folder + 'validation_data.csv', index=False)
-    test_data.to_csv(args.output_folder + 'test_data.csv', index=False)
+    train_data.to_csv(args.output_folder + 'train_data.csv')
+    vald_data.to_csv(args.output_folder + 'validation_data.csv')
+    test_data.to_csv(args.output_folder + 'test_data.csv')
 
     #####################
     # End the progress

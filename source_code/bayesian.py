@@ -50,8 +50,8 @@ def find_best_model(train_data, scoring_methods, max_iters):
 if __name__ == "__main__":
     parser = argparse.ArgumentParser(description='Bayesian Network')
     parser.add_argument('--train_data', type=str, default='../data/hmm_data/train_data.csv', help='Path to train data file')
-    parser.add_argument('--val_data', type=str, default='../data/hmm_data/validation_data.csv', help='Path to train data file')
-    parser.add_argument('--test_data', type=str, default='../data/hmm_data/test_data.csv', help='Path to train data file')
+    parser.add_argument('--val_data', type=str, default='../data/hmm_data/validation_data.csv', help='Path to validation data file')
+    parser.add_argument('--test_data', type=str, default='../data/hmm_data/test_data.csv', help='Path to test data file')
     args = parser.parse_args()
 
     #####################
@@ -118,9 +118,10 @@ if __name__ == "__main__":
     validation_real = states_validation['Close'].to_numpy()
 
     prediction_validation_bayesian = predict_value(model_bayesian, states_validation)
+    # print("Validation: ", prediction_validation_bayesian)
     error_vald_bayesian = calculate_error(prediction_validation_bayesian, validation_real)
     print("The error of validation set using Bayesian methods: ", error_vald_bayesian)
-
+    # print(model_bayesian)
 
     ## Discretise the test dataset and plot
     states_test = pd.read_csv(args.test_data, index_col=0)
@@ -130,6 +131,7 @@ if __name__ == "__main__":
     test_real = states_test['Close'].to_numpy()
 
     prediction_test_bayesian = predict_value(model_bayesian, states_test)
+    print("Test: ",prediction_test_bayesian)
     error_test_bayesian = calculate_error(prediction_test_bayesian, test_real)
     print("The error of test set using Bayesian methods: ", error_test_bayesian)
 
