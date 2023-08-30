@@ -28,13 +28,20 @@ The dataset can be accessible in [./historical_data](./historical_data/), includ
 
 ## 4. Implementation
 
-- Download and install `conda` at [here](https://www.anaconda.com/download). 
+- Download and install `conda` at [here](https://www.anaconda.com/download).
 
 - Create a virtual environment dedicated to this project by running the following commands:
 
 ```bash
 conda create -n wqu python=3.9
 conda activate wqu
+```
+
+- Clone this repository:
+
+```bash
+git clone https://github.com/honghanhh/wqu_capstone_project_3621.git
+cd wqu_capstone_project_3621
 ```
 
 - Run the following command to install the required packages:
