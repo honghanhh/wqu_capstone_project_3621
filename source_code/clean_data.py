@@ -84,6 +84,7 @@ if __name__ == '__main__':
     print("Cleaning the data...")
 
     df = pd.read_csv(args.input_data, index_col=0)
+    print(df)
     df_after_bad_data = handle_bad_data(df)
     df_after_missing_data = handle_missing_data(df_after_bad_data)
     data = detect_outliers_zscore(df_after_missing_data)
@@ -100,8 +101,8 @@ if __name__ == '__main__':
     test_data = data[int(0.90* data.shape[0]) : int(data.shape[0])]
 
     # Create folder if it not exists
-    if not os.path.exists(os.path.dirname(args.output_folder)):
-        os.makedirs(os.path.dirname(args.output_folder))
+    if not os.path.exists(args.output_folder):
+        os.makedirs(args.output_folder)
 
     # Save the data
     train_data.to_csv(args.output_folder + 'train_data.csv', index=False)
