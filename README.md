@@ -28,7 +28,7 @@ The dataset can be accessible in [./historical_data](./historical_data/), includ
 
 ## 4. Implementation
 
-- Download and install `conda` at [here](https://www.anaconda.com/download). If you're unfamiliar with conda, you can use `virtualenv` instead.
+- Download and install `conda` at [here](https://www.anaconda.com/download). 
 
 - Create a virtual environment dedicated to this project by running the following commands:
 
