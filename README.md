@@ -79,7 +79,7 @@ pip install -r requirements.txt
 
 - Install the hmms package:
 ```bash
-pip install hmms
+pip install hmms git+https://github.com/lopatovsky/HMMs.git@c7ef1a72d49de388ed62632137566586cd06812c
 ```
 
 Note: 
@@ -90,7 +90,6 @@ Note:
 - Run the following command to compile end-to-end pipeline:
 
 ```python
-chmod +x run.sh
 ./run.sh
 ```
 
