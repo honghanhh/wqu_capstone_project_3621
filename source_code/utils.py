@@ -48,10 +48,11 @@ def calculate_error(pred_value, real):
     """
     try:
         error = np.mean(real != np.roll(pred_value, 1))
-        print(f'\nError: {error * 100}%')
-        logging.info(f'Error: {error * 100} %')
+        error_percent = round(error * 100, 2)  # rounding to 2 decimal places
+        print(f'\nError: {error_percent}%')
+        logging.info(f'Error: {error_percent} %')
 
-        return error
+        return error_percent
 
     except Exception as e:
         logging.error("Failed to calculate error with error: %s", e)
