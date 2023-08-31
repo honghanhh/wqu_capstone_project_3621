@@ -63,7 +63,7 @@ For **Windows** users using Git Bash:
 source wqu_env/Scripts/activate
 ```
 
-## 2. Clone the repository and install requirements
+### 2. Clone the repository and install requirements
 - Clone this repository:
 
 ```bash
@@ -86,7 +86,7 @@ Note:
 - We install hmms separately to ensure that its dependencies, such as Numpy and Cython, are correctly installed first. This order of installation helps prevent any potential errors linked to missing or incorrectly installed dependencies.
 - We recommend using Conda for installation. If you choose not to use Conda, be aware that you'll need to set up the necessary C++ build tools to compile the hmms package. This is because hmms has components written in C++ and it needs a C++ compiler to be installed on the system.
 
-## 3. Run the pipeline
+### 3. Run the pipeline
 - Run the following command to compile end-to-end pipeline:
 
 ```python
@@ -101,5 +101,5 @@ If you want to run each step of the pipeline separately, run each of the command
 ## Contributors
 
 - 🐮 [Hanh Tran](https://github.com/honghanhh) 🐮
-- [Moaz Razi ](https://github.com/moazrazi)
+- 🦁 [Moaz Razi ](https://github.com/moazrazi) 🦁
 - [Phat Nguyen](https://github.com/fattiekakes)
