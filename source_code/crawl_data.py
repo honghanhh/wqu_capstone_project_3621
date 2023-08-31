@@ -58,7 +58,7 @@ def data_extraction():
     btc_onchain = asset_metrics.to_dataframe()
     btc_onchain = btc_onchain.rename(columns={
         'PriceUSD': 'btc_price',
-        'HashRate': 'hash_ate',
+        'HashRate': 'hash_rate',
         'DiffMean': 'block_difficulty',
         'TxCnt': 'transaction_count',
         'CapMrktCurUSD': 'market_cap'
