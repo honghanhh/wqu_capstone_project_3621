@@ -30,11 +30,11 @@ The dataset can be accessible in [./historical_data](./historical_data/), includ
 ## 4. Project Setup & Execution
 
 ### 1. Creating a Virtual Environment
-While there are several ways to set up a Python virtual environment for this project, we recommend using conda, a powerful package manager and environment manager from Anaconda. Alternatively, you can also use venv, a module provided by Python itself to create virtual environments.
+While there are several ways to set up a Python virtual environment for this project, we recommend using conda, a powerful package manager and environment manager from Anaconda. Conda makes it easy to create, save, load, and switch between project environments, and it can handle packages from Python and other languages as well. Alternatively, you can also use venv, a module provided by Python itself to create virtual environments. Please note you may require additional setup if you use venv.
 
 **Recommended Method: Using conda**
-- Download and install `conda` at [here](https://www.anaconda.com/download).
-- Create a virtual environment dedicated to this project by running the following commands:
+- Download and install `conda` by downloading the Anaconda distribution from [here](https://www.anaconda.com/download).
+- Create a virtual environment dedicated to this project by running the following commands using Anaconda Prompt:
 ```bash
 conda create -n wqu_env python=3.9
 conda activate wqu_env
@@ -47,7 +47,10 @@ If you prefer not to use conda, you can create a virtual environment using venv.
 1. Create environment
 ```bash
 python3 -m venv wqu_env
+        or 
+python -m venv wqu_env
 ```
+
 2. Activate environment
 
 For **Unix or MacOS**:
@@ -74,14 +77,24 @@ cd wqu_capstone_project_3621
 pip install -r requirements.txt
 ```
 
+- Install the hmms package:
+```bash
+pip install hmms
+```
+
+Note: 
+- We install hmms separately to ensure that its dependencies, such as Numpy and Cython, are correctly installed first. This order of installation helps prevent any potential errors linked to missing or incorrectly installed dependencies.
+- We recommend using Conda for installation. If you choose not to use Conda, be aware that you'll need to set up the necessary C++ build tools to compile the hmms package. This is because hmms has components written in C++ and it needs a C++ compiler to be installed on the system.
+
 ## 3. Run the pipeline
 - Run the following command to compile end-to-end pipeline:
 
 ```python
-cd source_code
 chmod +x run.sh
 ./run.sh
 ```
+
+**Note (Windows users)**: We recommend using Git Bash to run the run.sh script, as Windows Command Prompt and PowerShell do not support the running of bash scripts without additional setup.
 
 If you want to run each step of the pipeline separately, run each of the command in the `run.sh` file.
 
