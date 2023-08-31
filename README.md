@@ -2,13 +2,14 @@
 
 ## 1. Motivation
 
-The objective of this project is to develop a predictive model for Bitcoin (BTC) price using a Probabilistic Graphical Model (PGM). By leveraging the power of PGMs, we aim to identify the key sentiment, financial, technical, and on-chain factors that significantly influence the price of BTC. This analysis will provide valuable insights for swing traders looking to make informed trading decisions.
+The objective of this project is to develop and compare predictive models for Bitcoin (BTC) price using two types of Probabilistic Graphical Models (PGMs): Bayesian Networks and Markov Networks. By leveraging the power of these PGMs, we aim to identify the key sentiment, financial, technical, and on-chain factors that significantly influence the price of BTC. We then construct and compare models using both Bayesian and Markov network. This comparative analysis will provide valuable insights for swing traders looking to make informed trading decisions based on our assessment of these predictive models.
 
 The project encompasses the following goals:
 
 - **Factor Identification**: We will carefully analyze a diverse set of sentiment, financial, technical, and on-chain metrics to identify the most influential factors affecting the price of BTC. To understand these factors, we can gain deeper insights into the market dynamics.
 - **PGM Construction**: Using the identified factors, we will construct a sophisticated Probabilistic Graphical Model. This model will capture the complex relationships and dependencies among the factors, allowing us to predict accurately future BTC price movements.
-- **Performance Comparison**: To demonstrate the effectiveness of our PGM-based approach, we will compare its performance against a mean-reverting strategy. By evaluating and contrasting the outcomes of both approaches, we aim to showcase the viability and potential advantages of our predictive model.
+- **Markov model Construction**: As a comparative study, we will also construct a Markov Network, to investigate the potential differences and performance of both modeling approaches in the context of cryptocurrency price prediction.
+- **Performance Comparison**: We will evaluate the prediction accuracy of both models using Mean Absolute Error (MAE). Further, we will measure trading performance using metrics such as return on investment and Sharpe ratio. By contrasting the outcomes, we aim to showcase the viability of our predictive models.
 
 By achieving these objectives, we seek to provide traders and investors with a valuable tool for making informed decisions in the dynamic and volatile world of cryptocurrency trading.
 
@@ -26,17 +27,40 @@ The dataset can be accessible in [./historical_data](./historical_data/), includ
 
 ![workflow](./architecture/workflow.png)
 
-## 4. Implementation
+## 4. Project Setup & Execution
 
+### 1. Creating a Virtual Environment
+While there are several ways to set up a Python virtual environment for this project, we recommend using conda, a powerful package manager and environment manager from Anaconda. Alternatively, you can also use venv, a module provided by Python itself to create virtual environments.
+
+**Recommended Method: Using conda**
 - Download and install `conda` at [here](https://www.anaconda.com/download).
-
 - Create a virtual environment dedicated to this project by running the following commands:
-
 ```bash
-conda create -n wqu python=3.9
-conda activate wqu
+conda create -n wqu_env python=3.9
+conda activate wqu_env
 ```
 
+**Alternative Method: Using venv**
+
+If you prefer not to use conda, you can create a virtual environment using venv. To do this, navigate to the directory where you want to place the virtual environment, then run the venv module as a script:
+
+1. Create environment
+```bash
+python3 -m venv wqu_env
+```
+2. Activate environment
+
+For **Unix or MacOS**:
+```bash
+source wqu_env/bin/activate
+```
+
+For **Windows** users using Git Bash:
+```bash
+source wqu_env/Scripts/activate
+```
+
+## 2. Clone the repository and install requirements
 - Clone this repository:
 
 ```bash
@@ -50,6 +74,7 @@ cd wqu_capstone_project_3621
 pip install -r requirements.txt
 ```
 
+## 3. Run the pipeline
 - Run the following command to compile end-to-end pipeline:
 
 ```python
