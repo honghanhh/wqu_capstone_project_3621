@@ -90,6 +90,7 @@ Note:
 - Run the following command to compile end-to-end pipeline:
 
 ```python
+chmod +x run.sh
 ./run.sh
 ```
 
