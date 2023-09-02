@@ -115,16 +115,18 @@ if __name__ == '__main__':
 
     # Calculate error
     ### Bayesian Model ###
+    print(f'**********Bayesian Network Model**********')
     print(f'Bayesian real values: \n {real_values_bayesian}')
     print(f'Bayesian predicted values: \n {prediction_test_bayesian}')
     error_test_bayesian = calculate_error(prediction_test_bayesian, real_values_bayesian)
-    print(f'Bayesian error: \n {error_test_bayesian}')
+    print(f'Bayesian MAE: \n {error_test_bayesian}')
 
     ### Hidden Markov Model ###
+    print(f'**********Markov Network Model**********')
     print(f'Markov real values: \n {real_values_bayesian}')
     print(f'Markov predicted values: \n {prediction_test_markov}')
     error_test_markov = calculate_error(prediction_test_markov, real_values_markov)
-    print(f'Markov error: \n {error_test_markov}')
+    print(f'Markov MAE: \n {error_test_markov}')
 
     test_data = pd.read_csv('../data/cleaned_data/test_data.csv', index_col='Date')
     test_sheet = pd.DataFrame(index=test_data.index[1:])  # exclude the first row

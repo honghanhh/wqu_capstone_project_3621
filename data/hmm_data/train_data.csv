@@ -1,4 +1,4 @@
-Date,hash_ate,transaction_count,s&p500,gold,13w_treasury,usd_index,Open,High,Low,Close,Volume,Market Cap,SMA,EMA,RSI,VWAP,ATR,OBV,google_trends,forecast
+Date,hash_rate,transaction_count,s&p500,gold,13w_treasury,usd_index,Open,High,Low,Close,Volume,Market Cap,SMA,EMA,RSI,VWAP,ATR,OBV,google_trends,forecast
 2013-07-08,0,1,0,2,1,0,0,2,1,0,1,2,0,1,2,2,0,2,2,0
 2013-07-15,1,1,0,2,0,0,2,1,0,2,0,2,2,0,2,0,1,2,1,2
 2013-07-22,1,1,1,2,0,0,1,0,1,1,1,2,1,0,1,0,2,2,1,0

@@ -118,20 +118,21 @@ if __name__ == "__main__":
     print('The shape of validation data is: ', val_data.shape)
     print('The shape of test data is: ', test_data.shape)
 
-    if not os.path.exists("./hmms"):
-        os.makedirs("./hmms")
+    # if not os.path.exists("./hmms"):
+    #     os.makedirs("./hmms")
 
-    with concurrent.futures.ProcessPoolExecutor() as executor:
-        series_ids = [col for col in train_data.columns if col != 'forecast']
-        futures = {executor.submit(train_and_save_model, series_id, train_data) for series_id in series_ids}
+    # with concurrent.futures.ProcessPoolExecutor() as executor:
+    #     series_ids = [col for col in train_data.columns if col != 'forecast']
+    #     futures = {executor.submit(train_and_save_model, series_id, train_data) for series_id in series_ids}
 
-        for future in tqdm(concurrent.futures.as_completed(futures), total=len(futures), desc="Training models"):
-            pass
+    #     for future in tqdm(concurrent.futures.as_completed(futures), total=len(futures), desc="Training models"):
+    #         pass
 
     # Discretise the data using the trained models and save to csv
-    discretise_data_with_hmm_and_save_csv(train_data, 'train_data')
-    discretise_data_with_hmm_and_save_csv(val_data, 'validation_data')
-    discretise_data_with_hmm_and_save_csv(test_data, 'test_data')
+    # discretise_data_with_hmm_and_save_csv(train_data, 'train_data')
+    # discretise_data_with_hmm_and_save_csv(val_data, 'validation_data')
+    # discretise_data_with_hmm_and_save_csv(test_data, 'test_data')
+
 
     #####################
     # End the progress
