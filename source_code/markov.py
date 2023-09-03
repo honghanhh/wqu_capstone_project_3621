@@ -94,7 +94,7 @@ if __name__ == '__main__':
         os.makedirs('./plots/markov')
 
     # Save the plot
-    fig.savefig('./plots/markov/markov_model.png')
+    fig.savefig('./plots/markov/Markov Model.png')
 
 
     # discretise test data and plot
