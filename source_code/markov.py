@@ -47,11 +47,10 @@ if __name__ == '__main__':
     argparser.add_argument('--hmm_data', type=str, default='../data/hmm_data/test_data.csv', help='Path to the test data')
     args = argparser.parse_args()
 
-
     #####################
     # Start the progress
     #####################
-    print("Training Hidden Markov...")
+    print("Constructing Markov model...")
 
     # Load pkl model
     with open('../models/bayesian_model.pkl', 'rb') as f:
@@ -101,7 +100,6 @@ if __name__ == '__main__':
     test_data = pd.read_csv(args.cleaned_data, index_col=0)
     states_test = pd.read_csv(args.hmm_data, index_col=0)
     
-
     # Initialize an empty DataFrame to store the results
     results_df_markov = pd.DataFrame()
 
@@ -139,4 +137,4 @@ if __name__ == '__main__':
     #####################
     # End the progress
     #####################
-    print("Training Hidden Markov...Done")
+    print("Training Markov model...Done")
